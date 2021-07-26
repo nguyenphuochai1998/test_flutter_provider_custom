@@ -11,6 +11,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const providerKey = 'SIMPLE_PROVIDER';
+    const providerKey2 = 'SIMPLE_PROVIDER2';
     const valueString = 'HELLO';
     return MaterialApp(
       title: 'Flutter Demo',
@@ -19,7 +20,8 @@ class MyApp extends StatelessWidget {
       ),
       home: ProviderController(
           providers: [
-            Provider<String?>(providerKey: providerKey, value: valueString)
+            Provider<String?>(providerKey: providerKey, value: valueString),
+            Provider<int>(providerKey: providerKey2, value: 0)
           ],
           builderChild: () {
             return ProviderControllerPage(title: 'Flutter Demo Home Page');
@@ -39,30 +41,35 @@ class ProviderControllerPage extends StatefulWidget {
 
 class ProviderControllerPageState extends State<ProviderControllerPage> {
   String title = "check hey";
-  int count =0;
   @override
   Widget build(BuildContext context) {
+    const providerKey2 = 'SIMPLE_PROVIDER2';
     const providerKey = 'SIMPLE_PROVIDER';
     const valueString = 'HELLO';
     return Scaffold(
       body: SafeArea(
-        child: Consumer(
-          providerKey: providerKey,
-          builder: (context, value) {
-            return Column(
-              children: [
-                Text(value.toString()),
-                ElevatedButton(
-                  onPressed: () {
-                    ProviderController.of(context)
-                        .getProviderByKey(key: providerKey)!
-                        .setValue("newValue ${count ++}");
-                  },
-                  child: Text("text"),
-                )
-              ],
-            );
-          },
+        child: Column(
+          children: [
+            Consumer(
+              providerKey: providerKey,
+              builder: (context, value) {
+                return Text(value.toString());
+              },
+            ),
+            Consumer(providerKey: providerKey2, builder: (context,value){
+              int data = value as int;
+              return Text('$data');
+            }),
+            ElevatedButton(onPressed: (){
+              int count = ProviderController.of(context).getProviderByKey(key: providerKey2)!.getValue();
+              ProviderController.of(context)
+                  .getProviderByKey(key: providerKey)!
+                  .setValue("newValue ${++ count }");
+              ProviderController.of(context)
+                  .getProviderByKey(key: providerKey2)!
+                  .setValue(count ++);
+            }, child: Text("change"))
+          ],
         ),
       ),
     );
