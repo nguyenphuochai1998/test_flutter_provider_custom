@@ -58,16 +58,16 @@ class ProviderControllerPageState extends State<ProviderControllerPage> {
             ),
             Consumer(providerKey: providerKey2, builder: (context,value){
               int data = value as int;
-              return Text('$data');
+              return Text('Value key2: -> $data');
             }),
             ElevatedButton(onPressed: (){
               int count = ProviderController.of(context).getProviderByKey(key: providerKey2)!.getValue();
               ProviderController.of(context)
                   .getProviderByKey(key: providerKey)!
-                  .setValue("newValue ${++ count }");
+                  .setValue("Value key1: -> ${++ count }");
               ProviderController.of(context)
                   .getProviderByKey(key: providerKey2)!
-                  .setValue(count ++);
+                  .setValue(count);
             }, child: Text("change"))
           ],
         ),
